@@ -14,6 +14,6 @@ export async function classifyIssue(title, description) {
     return data.tags;
   } catch (err) {
     console.error("Error al clasificar issue:", err);
-    return []; // fallback si falla
+    return [];
   }
 }

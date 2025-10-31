@@ -6,7 +6,6 @@ export async function getIssues(req, res) {
   const db = await initDB();
   const issues = await db.all("SELECT * FROM issues WHERE project_id = ?", [projectId]);
 
-  // Convertir los tags JSON string a arrays
   const formattedIssues = issues.map(i => ({
     ...i,
     tags: i.tags ? JSON.parse(i.tags) : []

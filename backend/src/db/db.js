@@ -7,7 +7,6 @@ export async function initDB() {
     driver: sqlite3.Database
   });
 
-  // Tablas
   await db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,7 +33,6 @@ export async function initDB() {
     );
   `);
 
-  // Usuario de prueba
   await db.run("INSERT OR IGNORE INTO users (id, username, password) VALUES (1, 'admin', '1234')");
   await db.run("INSERT OR IGNORE INTO projects (id, name) VALUES (1, 'Proyecto Demo')");
 

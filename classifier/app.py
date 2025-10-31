@@ -3,12 +3,10 @@ from pydantic import BaseModel
 
 app = FastAPI(title="Issue Classifier Service")
 
-# Modelo que define lo que recibimos
 class Issue(BaseModel):
     title: str
     description: str
 
-# Reglas simples de clasificación
 def classify_text(text: str):
     tags = []
     text = text.lower()
@@ -30,7 +28,6 @@ def classify_text(text: str):
 
     return tags
 
-# Endpoint principal
 @app.post("/classify")
 def classify(issue: Issue):
     text = issue.title + " " + issue.description

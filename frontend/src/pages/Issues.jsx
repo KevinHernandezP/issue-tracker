@@ -74,7 +74,6 @@ export default function Issues({ token, project }) {
         </button>
       </form>
 
-      {/* Estado de carga / error */}
       {loading ? (
         <p className="text-gray-500 text-center italic">
           Cargando incidencias...
