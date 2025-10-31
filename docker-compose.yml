@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    container_name: issue-backend
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - PYTHON_URL=http://classifier:5000
+      - JWT_SECRET=secretkey
+    depends_on:
+      - classifier
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+  frontend:
+    build: ./frontend
+    container_name: issue-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+    command: ["npm", "run", "dev", "--", "--host"]
+    depends_on:
+      - backend
+  classifier:
+    build: ./classifier
+    container_name: issue-classifier
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./classifier:/app
