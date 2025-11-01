@@ -42,7 +42,7 @@ export default function Issues({ token, project }) {
         />
         <button
           type="submit"
-          className="bg-green-500 text-white px-5 py-2 rounded-md hover:bg-green-600 transition curso"
+          className="bg-green-500 text-white px-5 py-2 rounded-md hover:bg-green-600 transition cursor-pointer"
         >
           Crear
         </button>
