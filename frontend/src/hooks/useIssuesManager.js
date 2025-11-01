@@ -8,7 +8,7 @@ export function useIssuesManager(token, project) {
   const [form, setForm] = useState({ title: "", description: "" });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [validationErrors, setValidationErrors] = useState({});
   useEffect(() => {
     const fetchIssues = async () => {
       try {
@@ -28,14 +28,44 @@ export function useIssuesManager(token, project) {
         setLoading(false);
       }
     };
-
     if (project?.id && token) {
       fetchIssues();
     }
   }, [project?.id, token]);
 
-  const handleSubmit = async (e) => {
+  const validateForm = () => {
+  let errors = {};
+  let isValid = true;
+  const minLength = 3; 
+
+  if (!form.title.trim()) {
+    errors.title = "El título es obligatorio.";
+    isValid = false;
+  } else if (form.title.trim().length < minLength) {
+    errors.title = `El título debe tener al menos ${minLength} caracteres.`;
+    isValid = false;
+  }
+
+  if (!form.description.trim()) {
+    errors.description = "La descripción es obligatoria.";
+    isValid = false;
+  }
+
+  setValidationErrors(errors);
+  return isValid;
+};
+
+
+
+    const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return; 
+    }
+
+    setError(null); 
+
     try {
       const newIssue = await createIssue(
         { ...form, projectId: project.id, status: "To Do" },
@@ -43,11 +73,13 @@ export function useIssuesManager(token, project) {
       );
       setIssues((prev) => [...prev, newIssue]);
       setForm({ title: "", description: "" });
+      setValidationErrors({}); 
     } catch (err) {
       console.error("Error creating issue:", err);
       setError("Error al crear la incidencia");
     }
   };
+
 
   const onDragEnd = (result) => {
     const { source, destination } = result;
@@ -83,5 +115,6 @@ export function useIssuesManager(token, project) {
     setForm,
     handleSubmit,
     onDragEnd,
+    validationErrors
   };
 }

@@ -10,6 +10,7 @@ export default function Issues({ token, project }) {
     columnsOrder,
     setForm,
     handleSubmit,
+    validationErrors,
     onDragEnd,
   } = useIssuesManager(token, project);
 
@@ -31,6 +32,7 @@ export default function Issues({ token, project }) {
           onChange={(e) => setForm({ ...form, title: e.target.value })}
           required
         />
+          {validationErrors.title && <span className="absolute flex text-red-500 text-sm mt-[49px] p-[1px]">{validationErrors.title}</span>}
         <input
           className="border border-gray-300 rounded-md p-2 flex-1 focus:ring-2 focus:ring-green-400"
           placeholder="Descripción"
@@ -40,7 +42,7 @@ export default function Issues({ token, project }) {
         />
         <button
           type="submit"
-          className="bg-green-500 text-white px-5 py-2 rounded-md hover:bg-green-600 transition"
+          className="bg-green-500 text-white px-5 py-2 rounded-md hover:bg-green-600 transition curso"
         >
           Crear
         </button>

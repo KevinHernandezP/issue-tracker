@@ -60,32 +60,6 @@ docker-compose up --build
 docker-compose up -d --build
 ```
 
-### 💻 Opción 2: Desarrollo Local
-
-#### Backend (Node.js)
-```bash
-cd backend
-npm install
-npm run dev
-# Servidor corriendo en http://localhost:4000
-```
-
-#### Frontend (React)
-```bash
-cd frontend
-npm install
-npm run dev
-# Aplicación corriendo en http://localhost:5173
-```
-
-#### Classifier (Python)
-```bash
-cd classifier
-pip install -r requirements.txt
-uvicorn app:app --reload --port 5000
-# Servicio corriendo en http://localhost:5000
-```
-
 ## 🎮 Uso de la Aplicación
 
 ### 1. **Acceso al Sistema**

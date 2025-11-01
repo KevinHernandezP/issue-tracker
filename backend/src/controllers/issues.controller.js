@@ -1,39 +1,40 @@
-import { initDB } from "../db/db.js";
 import { classifyIssue } from "../services/classify.service.js";
+import * as issueRepository from "../repositories/issue.repository.js";
 
 export async function getIssues(req, res) {
-  const { projectId } = req.params;
-  const db = await initDB();
-  const issues = await db.all("SELECT * FROM issues WHERE project_id = ?", [projectId]);
-
-  const formattedIssues = issues.map(i => ({
-    ...i,
-    tags: i.tags ? JSON.parse(i.tags) : []
-  }));
-
-  res.json(formattedIssues);
+  try {
+    const { projectId } = req.params;
+    const issues = await issueRepository.findByProjectId(projectId);
+    res.json(issues);
+  } catch (error) {
+    console.error("Error getting issues:", error);
+    res.status(500).json({ error: "Failed to fetch issues" });
+  }
 }
-
 
 export async function createIssue(req, res) {
-  const { projectId } = req.params;
-  const { title, description } = req.body;
+  try {
+    const { projectId } = req.params;
+    const { title, description } = req.body;
 
-  const tags = await classifyIssue(title, description);
-  const status = "To Do"; // 👈 estado inicial
+    if (!title || !description) {
+      return res.status(400).json({ error: "Title and description are required" });
+    }
 
-  const db = await initDB();
-  const result = await db.run(
-    "INSERT INTO issues (project_id, title, description, tags, status) VALUES (?, ?, ?, ?, ?)",
-    [projectId, title, description, JSON.stringify(tags), status]
-  );
+    const tags = await classifyIssue(title, description);
+    const status = "To Do";
 
-  res.status(201).json({
-    id: result.lastID,
-    title,
-    description,
-    tags,
-    status, // 👈 devuelve el estado
-  });
+    const id = await issueRepository.createIssue(
+      projectId,
+      title,
+      description,
+      tags,
+      status
+    );
+
+    res.status(201).json({ id, title, description, tags, status });
+  } catch (error) {
+    console.error("Error creating issue:", error);
+    res.status(500).json({ error: "Failed to create issue" });
+  }
 }
-

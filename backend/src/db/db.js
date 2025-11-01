@@ -34,7 +34,6 @@ export async function initDB() {
     );
   `);
 
-  // 👇 Esto se asegura de que la columna exista incluso si la tabla ya fue creada antes
   try {
     await db.exec(`ALTER TABLE issues ADD COLUMN status TEXT DEFAULT 'To Do';`);
   } catch (err) {

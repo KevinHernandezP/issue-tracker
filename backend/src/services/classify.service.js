@@ -8,12 +8,12 @@ export async function classifyIssue(title, description) {
       body: JSON.stringify({ title, description }),
     });
 
-    if (!response.ok) throw new Error("Error en la clasificación");
+    if (!response.ok) throw new Error("Classification error");
 
     const data = await response.json();
     return data.tags;
   } catch (err) {
-    console.error("Error al clasificar issue:", err);
+    console.error("Error classifying issue:", err);
     return [];
   }
 }

@@ -24,7 +24,7 @@ export async function getIssues(projectId, token) {
 }
 
 export async function createIssue(data, token) {
-  const res = await fetch(`${API_URL}/issues?projectId=${data.projectId}`, {
+  const res = await fetch(`${API_URL}/issues/${data.projectId}`, {
     method: "POST",
     headers: { 
       "Content-Type": "application/json",
@@ -32,5 +32,11 @@ export async function createIssue(data, token) {
     },
     body: JSON.stringify(data),
   });
+
+  if (!res.ok) {
+    const error = await res.text();
+    throw new Error(`Error ${res.status}: ${error}`);
+  }
+
   return res.json();
 }
