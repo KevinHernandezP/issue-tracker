@@ -4,7 +4,7 @@ import { open } from "sqlite";
 export async function initDB() {
   const db = await open({
     filename: "./src/db/data.db",
-    driver: sqlite3.Database
+    driver: sqlite3.Database,
   });
 
   await db.exec(`
@@ -29,12 +29,27 @@ export async function initDB() {
       title TEXT,
       description TEXT,
       tags TEXT,
+      status TEXT DEFAULT 'To Do',
       FOREIGN KEY(project_id) REFERENCES projects(id)
     );
   `);
 
-  await db.run("INSERT OR IGNORE INTO users (id, username, password) VALUES (1, 'admin', '1234')");
-  await db.run("INSERT OR IGNORE INTO projects (id, name) VALUES (1, 'Proyecto Demo')");
+  // 👇 Esto se asegura de que la columna exista incluso si la tabla ya fue creada antes
+  try {
+    await db.exec(`ALTER TABLE issues ADD COLUMN status TEXT DEFAULT 'To Do';`);
+  } catch (err) {
+    if (!err.message.includes("duplicate column")) {
+      console.error("Error adding status column:", err.message);
+    }
+  }
+
+  await db.run(
+    "INSERT OR IGNORE INTO users (id, username, password) VALUES (1, 'admin', '1234')"
+  );
+  await db.run(
+    "INSERT OR IGNORE INTO projects (id, name) VALUES (1, 'Proyecto Demo')"
+  );
 
   return db;
 }
+

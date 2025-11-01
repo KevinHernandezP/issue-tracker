@@ -20,12 +20,20 @@ export async function createIssue(req, res) {
   const { title, description } = req.body;
 
   const tags = await classifyIssue(title, description);
+  const status = "To Do"; // 👈 estado inicial
 
   const db = await initDB();
   const result = await db.run(
-    "INSERT INTO issues (project_id, title, description, tags) VALUES (?, ?, ?, ?)",
-    [projectId, title, description, JSON.stringify(tags)]
+    "INSERT INTO issues (project_id, title, description, tags, status) VALUES (?, ?, ?, ?, ?)",
+    [projectId, title, description, JSON.stringify(tags), status]
   );
 
-  res.status(201).json({ id: result.lastID, title, description, tags });
+  res.status(201).json({
+    id: result.lastID,
+    title,
+    description,
+    tags,
+    status, // 👈 devuelve el estado
+  });
 }
+
